@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}All Bookings – Admin{% endblock %}
+{% block content %}
+<section class="py-4">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-800 mb-0">📋 All Bookings</h2>
+        <p class="text-muted small mb-0">Complete booking history on the platform</p>
+      </div>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary btn-sm">← Back</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table qs-table">
+        <thead>
+          <tr><th>#</th><th>User</th><th>Provider</th><th>Service</th><th>Date</th><th>Time</th><th>Problem</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for b in bookings %}
+          <tr>
+            <td class="text-muted small">{{ b.booking_id }}</td>
+            <td>{{ b.user_name }}</td>
+            <td>{{ b.provider_name }}</td>
+            <td>{{ b.service_category }}</td>
+            <td class="small">{{ b.date }}</td>
+            <td class="small">{{ b.time }}</td>
+            <td class="small text-muted">{{ b.problem[:40] ~ '...' if b.problem and b.problem|length>40 else b.problem or '—' }}</td>
+            <td><span class="status-badge status-{{ b.status.lower() }}">{{ b.status }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

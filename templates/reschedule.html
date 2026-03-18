@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Propose Reschedule – QuickServe{% endblock %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <a href="{{ url_for('provider_dashboard') }}" class="btn btn-outline-secondary btn-sm mb-4">
+          <i class="fas fa-arrow-left me-1"></i>Back
+        </a>
+        <div class="auth-card">
+          <div class="auth-card-header">
+            <div class="auth-logo" style="background:linear-gradient(135deg,#3B82F6,#2563EB);">📅</div>
+            <h4 class="fw-800 mt-3">Propose New Schedule</h4>
+            <p class="text-muted small">For <strong>{{ booking.user_name }}</strong> — {{ booking.service_category }}</p>
+            <div class="alert alert-warning py-2 small mt-2">
+              <i class="fas fa-info-circle me-1"></i>
+              Current date: <strong>{{ booking.date }}</strong> at <strong>{{ booking.time }}</strong>
+            </div>
+          </div>
+          <div class="auth-card-body">
+            <form method="POST">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-600">New Date</label>
+                  <input type="date" name="new_date" class="form-control" min="{{ today }}" required/>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-600">New Time</label>
+                  <input type="time" name="new_time" class="form-control" required/>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-600">Reason for Reschedule</label>
+                  <textarea name="reason" class="form-control" rows="3"
+                            placeholder="e.g. I have an emergency on that date, can we reschedule to..."></textarea>
+                </div>
+                <div class="col-12 mt-2">
+                  <button type="submit" class="btn btn-qs-primary w-100 btn-lg fw-600">
+                    <i class="fas fa-calendar-alt me-2"></i>Send Reschedule Request
+                  </button>
+                  <p class="text-muted small text-center mt-2">
+                    <i class="fas fa-info-circle me-1"></i>
+                    User will receive an email to Accept or Decline.
+                    If declined, booking will be cancelled.
+                  </p>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

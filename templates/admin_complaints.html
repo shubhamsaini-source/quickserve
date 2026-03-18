@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Complaints – Admin{% endblock %}
+{% block content %}
+<section class="py-4">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-800 mb-0">📢 Complaints</h2>
+        <p class="text-muted small mb-0">Manage all user complaints</p>
+      </div>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary btn-sm">← Back</a>
+    </div>
+
+    {% if complaints %}
+    <div class="row g-3">
+      {% for c in complaints %}
+      <div class="col-md-6">
+        <div class="complaint-card
+          {% if c.status == 'Pending' %}border-warning
+          {% elif c.status == 'Warning Issued' %}border-danger
+          {% else %}border-success{% endif %}">
+          <div class="complaint-header">
+            <div>
+              <strong>{{ c.user_name }}</strong>
+              <span class="text-muted small mx-1">→</span>
+              <strong>{{ c.provider_name }}</strong>
+            </div>
+            <span class="status-badge
+              {% if c.status == 'Pending' %}status-pending
+              {% elif c.status == 'Warning Issued' %}status-rejected
+              {% else %}status-completed{% endif %}">
+              {{ c.status }}
+            </span>
+          </div>
+          <div class="complaint-body">
+            <div class="mb-2">
+              <span class="badge bg-light text-dark border me-2">{{ c.service_category }}</span>
+              <span class="text-muted small">{{ c.date }}</span>
+            </div>
+            <div class="fw-600 text-danger mb-1">
+              {{ c.reason | replace('_', ' ') | title }}
+            </div>
+            {% if c.description %}
+            <p class="text-muted small mb-0">{{ c.description }}</p>
+            {% endif %}
+          </div>
+          {% if c.status == 'Pending' %}
+          <div class="complaint-footer">
+            <a href="{{ url_for('complaint_action', complaint_id=c.complaint_id, action='warn') }}"
+               class="btn btn-sm btn-warning fw-600">
+              <i class="fas fa-exclamation-triangle me-1"></i>Warn Provider
+            </a>
+            <a href="{{ url_for('complaint_action', complaint_id=c.complaint_id, action='dismiss') }}"
+               class="btn btn-sm btn-outline-secondary fw-600">
+              Dismiss
+            </a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h6 class="fw-600">No complaints yet</h6>
+      <p class="text-muted small">All users are happy! 😊</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

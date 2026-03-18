@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Services – QuickServe{% endblock %}
+{% block content %}
+<section class="py-4">
+  <div class="container">
+    <div class="page-header mb-4">
+      <h2 class="fw-800">🔍 Find Service Providers</h2>
+      <p class="text-muted">
+        {% if user_city %}
+          📍 Showing providers near <strong>{{ user_city }}</strong> — sorted by distance
+        {% else %}
+          Browse and book trusted professionals near you
+        {% endif %}
+      </p>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="filter-bar mb-4">
+      <div class="d-flex gap-2 flex-wrap align-items-center">
+        <span class="fw-600 me-1">Filter:</span>
+        <a href="{{ url_for('services') }}"
+           class="filter-chip {% if not selected %}active{% endif %}">All</a>
+        {% for cat in categories %}
+        <a href="{{ url_for('services', category=cat.name) }}"
+           class="filter-chip {% if selected == cat.name %}active{% endif %}">
+          {{ cat.icon }} {{ cat.name }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- NEARBY PROVIDERS (within 10km) -->
+    {% if nearby_providers %}
+    <div class="section-label mb-3">
+      <span class="badge-nearby">📍 Near You — Within 10 km</span>
+      <span class="text-muted small ms-2">{{ nearby_providers|length }} providers found</span>
+    </div>
+    <div class="row g-4 mb-5">
+      {% for dist, p in nearby_providers %}
+      <div class="col-md-6 col-lg-4">
+        <div class="provider-card nearby-card">
+          <div class="distance-badge">📍 {{ dist }} km away</div>
+          <div class="provider-avatar">{{ p.name[0].upper() }}</div>
+          <div class="provider-info">
+            <h5 class="fw-700 mb-1">{{ p.name }}</h5>
+            <div class="provider-cat">{{ p.cat_name }}</div>
+            <div class="provider-meta">
+              <span><i class="fas fa-map-marker-alt me-1"></i>{{ p.address or 'N/A' }}</span>
+              <span class="ms-2"><i class="fas fa-clock me-1"></i>{{ p.experience or 'N/A' }}</span>
+            </div>
+            <div class="provider-desc mt-2 text-muted small">
+              {{ p.description[:80] ~ '...' if p.description and p.description|length > 80 else p.description or 'Professional service provider.' }}
+            </div>
+          </div>
+          <div class="provider-footer">
+            <div class="rating-display">
+              {% set stars = p.avg_rating | int %}
+              {% for i in range(1,6) %}
+                {% if i <= stars %}<i class="fas fa-star text-warning"></i>
+                {% else %}<i class="far fa-star text-muted"></i>{% endif %}
+              {% endfor %}
+              <span class="ms-1 small text-muted">{{ "%.1f"|format(p.avg_rating) }} ({{ p.review_count }})</span>
+            </div>
+            <div class="provider-actions mt-3 d-flex gap-2">
+              <a href="{{ url_for('provider_detail', provider_id=p.provider_id) }}"
+                 class="btn btn-outline-secondary btn-sm flex-grow-1">View Profile</a>
+              <a href="{{ url_for('book_service', provider_id=p.provider_id) }}"
+                 class="btn btn-qs-primary btn-sm flex-grow-1">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- OTHER PROVIDERS (beyond 10km) -->
+    {% if other_providers %}
+    <div class="section-label mb-3 mt-2">
+      <span class="badge-others">🌐 Other Providers — Beyond 10 km</span>
+      <span class="text-muted small ms-2">{{ other_providers|length }} providers</span>
+    </div>
+    <div class="row g-4">
+      {% for dist, p in other_providers %}
+      <div class="col-md-6 col-lg-4">
+        <div class="provider-card">
+          <div class="distance-badge other">🚗 {{ dist }} km away</div>
+          <div class="provider-avatar" style="background:linear-gradient(135deg,#64748B,#94A3B8);">{{ p.name[0].upper() }}</div>
+          <div class="provider-info">
+            <h5 class="fw-700 mb-1">{{ p.name }}</h5>
+            <div class="provider-cat">{{ p.cat_name }}</div>
+            <div class="provider-meta">
+              <span><i class="fas fa-map-marker-alt me-1"></i>{{ p.address or 'N/A' }}</span>
+              <span class="ms-2"><i class="fas fa-clock me-1"></i>{{ p.experience or 'N/A' }}</span>
+            </div>
+            <div class="provider-desc mt-2 text-muted small">
+              {{ p.description[:80] ~ '...' if p.description and p.description|length > 80 else p.description or 'Professional service provider.' }}
+            </div>
+          </div>
+          <div class="provider-footer">
+            <div class="rating-display">
+              {% set stars = p.avg_rating | int %}
+              {% for i in range(1,6) %}
+                {% if i <= stars %}<i class="fas fa-star text-warning"></i>
+                {% else %}<i class="far fa-star text-muted"></i>{% endif %}
+              {% endfor %}
+              <span class="ms-1 small text-muted">{{ "%.1f"|format(p.avg_rating) }} ({{ p.review_count }})</span>
+            </div>
+            <div class="provider-actions mt-3 d-flex gap-2">
+              <a href="{{ url_for('provider_detail', provider_id=p.provider_id) }}"
+                 class="btn btn-outline-secondary btn-sm flex-grow-1">View Profile</a>
+              <a href="{{ url_for('book_service', provider_id=p.provider_id) }}"
+                 class="btn btn-qs-primary btn-sm flex-grow-1">Book Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if not nearby_providers and not other_providers %}
+    <div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <h6 class="fw-600">No providers found</h6>
+      <p class="text-muted small">No approved providers in this category yet.</p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}

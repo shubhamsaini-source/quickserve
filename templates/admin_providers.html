@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Manage Providers – Admin{% endblock %}
+{% block content %}
+<section class="py-4">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-800 mb-0">🔧 Service Providers</h2>
+        <p class="text-muted small mb-0">Approve, view or remove providers</p>
+      </div>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary btn-sm">← Back</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table qs-table">
+        <thead>
+          <tr><th>Name</th><th>Category</th><th>Email</th><th>Phone</th><th>Location</th><th>Rating</th><th>Status</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          {% for p in providers %}
+          <tr>
+            <td><strong>{{ p.name }}</strong></td>
+            <td>{{ p.cat_name }}</td>
+            <td class="small">{{ p.email }}</td>
+            <td class="small">{{ p.phone or '—' }}</td>
+            <td class="small">{{ p.address or '—' }}</td>
+            <td class="small">
+              <i class="fas fa-star text-warning"></i>
+              {{ "%.1f"|format(p.avg_rating) }}
+            </td>
+            <td>
+              {% if p.is_approved == 1 %}
+                <span class="status-badge status-completed">Approved</span>
+              {% elif p.is_approved == 0 %}
+                <span class="status-badge status-pending">Pending</span>
+              {% else %}
+                <span class="status-badge status-rejected">Rejected</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if p.is_approved != 1 %}
+                <a href="{{ url_for('approve_provider', provider_id=p.provider_id, status=1) }}"
+                   class="btn btn-xs btn-success me-1">Approve</a>
+              {% endif %}
+              {% if p.is_approved != 2 %}
+                <a href="{{ url_for('approve_provider', provider_id=p.provider_id, status=2) }}"
+                   class="btn btn-xs btn-danger">Reject</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

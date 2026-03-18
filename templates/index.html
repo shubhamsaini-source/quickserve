@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% block title %}QuickServe – Smart Service Provider{% endblock %}
+{% block content %}
+
+<!-- ── HERO ── -->
+<section class="qs-hero">
+  <div class="hero-bg-shape"></div>
+  <div class="container py-5">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6">
+        <span class="badge badge-qs mb-3">🚀 Smart Service Booking</span>
+        <h1 class="display-4 fw-800 hero-title">Find Trusted <span class="text-accent">Professionals</span> Near You</h1>
+        <p class="lead mt-3" style="color:rgba(255,255,255,0.92);">Electricians, Plumbers, AC Technicians, Carpenters & more — book in minutes, get service at your door.</p>
+
+        <!-- AI Recommendation Box -->
+        <div class="ai-box mt-4">
+          <div class="ai-box-header">
+            <span class="ai-icon">🤖</span>
+            <span class="fw-600">Smart AI Recommendation</span>
+            {% if detected_city %}
+            <span class="ms-auto badge bg-success" style="font-size:0.75rem;">
+              📍 {{ detected_city }}
+            </span>
+            {% endif %}
+          </div>
+          <div class="ai-box-body">
+            <div class="input-group">
+              <input type="text" id="aiInput" class="form-control"
+                     placeholder="e.g. fan not working, pipe leaking, AC not cooling..."/>
+              <button class="btn btn-qs-primary" onclick="getRecommendation()">
+                <i class="fas fa-magic me-1"></i> Suggest
+              </button>
+            </div>
+            <div id="aiResult" class="ai-result mt-2" style="display:none;"></div>
+          </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-3 flex-wrap">
+          <a href="{{ url_for('register') }}" class="btn btn-qs-primary btn-lg">
+            <i class="fas fa-user-plus me-2"></i>Get Started Free
+          </a>
+          <a href="{{ url_for('login') }}" class="btn btn-outline-secondary btn-lg">
+            <i class="fas fa-sign-in-alt me-2"></i>Login
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-6 text-center">
+        <div class="hero-visual">
+          <div class="hero-card-float">
+            <div class="service-badge-hero" style="--d:0s;   top:10%;  left:12%;">⚡ Electrician</div>
+            <div class="service-badge-hero" style="--d:0.2s; top:10%;  right:12%;">🔧 Plumber</div>
+            <div class="service-badge-hero" style="--d:0.4s; top:44%;  left:4%;">❄️ AC Tech</div>
+            <div class="service-badge-hero" style="--d:0.6s; bottom:10%; left:12%;">🪚 Carpenter</div>
+            <div class="service-badge-hero" style="--d:0.8s; bottom:10%; right:12%;">🔩 Mechanic</div>
+            <div class="service-badge-hero" style="--d:1s;   top:44%;  right:4%;">🎨 Painter</div>
+          </div>
+          <div class="hero-blob">
+            <div class="hero-central-icon">🏠</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<section class="qs-stats py-4">
+  <div class="container">
+    <div class="row g-3 text-center">
+      <div class="col-4">
+        <div class="stat-card">
+          <div class="stat-number">{{ total_providers }}+</div>
+          <div class="stat-label">Providers</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="stat-card">
+          <div class="stat-number">{{ total_users }}+</div>
+          <div class="stat-label">Happy Users</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="stat-card">
+          <div class="stat-number">{{ total_bookings }}+</div>
+          <div class="stat-label">Bookings Done</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CATEGORIES ── -->
+<section class="py-5">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <span class="section-badge">Our Services</span>
+      <h2 class="fw-800 mt-2">What Can We Help With?</h2>
+      <p class="text-muted">Browse all available service categories</p>
+    </div>
+    <div class="row g-4">
+      {% for cat in categories %}
+      <div class="col-6 col-md-4 col-lg-3">
+        <a href="{{ url_for('login') }}" class="text-decoration-none">
+          <div class="category-card">
+            <div class="cat-icon">{{ cat.icon }}</div>
+            <div class="cat-name">{{ cat.name }}</div>
+            <div class="cat-desc">{{ cat.description[:40] }}...</div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how-it-works py-5">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <span class="section-badge">Process</span>
+      <h2 class="fw-800 mt-2">How QuickServe Works</h2>
+    </div>
+    <div class="row g-4 text-center">
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-icon">📝</div>
+          <h5 class="fw-700 mt-3">Register</h5>
+          <p class="text-muted small">Create a free account in under a minute</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-icon">🔍</div>
+          <h5 class="fw-700 mt-3">Search</h5>
+          <p class="text-muted small">Find services by category or use AI recommendations</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-icon">📅</div>
+          <h5 class="fw-700 mt-3">Book</h5>
+          <p class="text-muted small">Send a booking request to your preferred provider</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card">
+          <div class="step-num">04</div>
+          <div class="step-icon">⭐</div>
+          <h5 class="fw-700 mt-3">Review</h5>
+          <p class="text-muted small">Rate your experience after service completion</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="qs-cta py-5">
+  <div class="container text-center">
+    <h2 class="fw-800 text-white mb-3">Ready to Get Started?</h2>
+    <p class="text-white opacity-75 mb-4">Join thousands of users who trust QuickServe for their home services.</p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{{ url_for('register') }}" class="btn btn-light btn-lg fw-600">
+        <i class="fas fa-user-plus me-2"></i>Register as User
+      </a>
+      <a href="{{ url_for('register_provider') }}" class="btn btn-outline-light btn-lg fw-600">
+        <i class="fas fa-hard-hat me-2"></i>Join as Provider
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function getRecommendation() {
+  const problem = document.getElementById("aiInput").value.trim();
+  if (!problem) return;
+  const btn = document.querySelector(".ai-box-body .btn-qs-primary");
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Thinking...';
+
+  const res  = await fetch("/recommend", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({problem})
+  });
+  const data = await res.json();
+  btn.innerHTML = '<i class="fas fa-magic me-1"></i> Suggest';
+
+  const box = document.getElementById("aiResult");
+  box.style.display = "block";
+
+  let html = `<strong>🎯 Recommended:</strong> `;
+  data.nearby.forEach(function(item) {
+    html += `<span class="badge me-1" style="background:#FF6B2C;font-size:0.85rem;">${item.service}</span>`;
+    if (item.city && item.count > 0) {
+      html += `<span class="badge bg-success me-2" style="font-size:0.8rem;">📍 ${item.count} in ${item.city}</span>`;
+    }
+  });
+
+  const svc = encodeURIComponent(data.recommendations[0]);
+  html += `<br/><a href="/login" class="btn btn-sm btn-qs-primary mt-2">Book Now →</a>`;
+  box.innerHTML = html;
+}
+document.getElementById("aiInput").addEventListener("keypress", function(e){
+  if(e.key==="Enter") getRecommendation();
+});
+</script>
+{% endblock %}

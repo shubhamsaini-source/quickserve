@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard – QuickServe{% endblock %}
+{% block content %}
+<section class="py-4">
+  <div class="container-fluid px-4">
+
+    <div class="page-header mb-4">
+      <h2 class="fw-800 mb-0">🛡️ Admin Dashboard</h2>
+      <p class="text-muted">Platform overview and management</p>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <div class="admin-stat-card blue">
+          <div class="admin-stat-icon"><i class="fas fa-users"></i></div>
+          <div class="admin-stat-num">{{ stats.users }}</div>
+          <div class="admin-stat-label">Total Users</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="admin-stat-card green">
+          <div class="admin-stat-icon"><i class="fas fa-hard-hat"></i></div>
+          <div class="admin-stat-num">{{ stats.providers }}</div>
+          <div class="admin-stat-label">Active Providers</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="admin-stat-card orange">
+          <div class="admin-stat-icon"><i class="fas fa-clock"></i></div>
+          <div class="admin-stat-num">{{ stats.pending }}</div>
+          <div class="admin-stat-label">Pending Approvals</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="admin-stat-card purple">
+          <div class="admin-stat-icon"><i class="fas fa-calendar-check"></i></div>
+          <div class="admin-stat-num">{{ stats.bookings }}</div>
+          <div class="admin-stat-label">Total Bookings</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin_providers') }}" class="admin-quick-link">
+          <i class="fas fa-hard-hat"></i><span>Manage Providers</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin_users') }}" class="admin-quick-link">
+          <i class="fas fa-users"></i><span>Manage Users</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin_bookings') }}" class="admin-quick-link">
+          <i class="fas fa-clipboard-list"></i><span>All Bookings</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin_categories') }}" class="admin-quick-link">
+          <i class="fas fa-th-large"></i><span>Categories</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin_reviews') }}" class="admin-quick-link">
+          <i class="fas fa-star"></i><span>Reviews</span>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="{{ url_for('admin_complaints') }}" class="admin-quick-link">
+          <i class="fas fa-exclamation-circle" style="color:#EF4444;"></i><span>Complaints</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Pending Approvals -->
+    {% if pending_providers %}
+    <h5 class="fw-700 mb-3">⏳ Pending Provider Approvals</h5>
+    <div class="table-responsive mb-4">
+      <table class="table qs-table">
+        <thead>
+          <tr><th>Name</th><th>Category</th><th>Email</th><th>Phone</th><th>Experience</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for p in pending_providers %}
+          <tr>
+            <td><strong>{{ p.name }}</strong></td>
+            <td>{{ p.cat_name }}</td>
+            <td class="small">{{ p.email }}</td>
+            <td class="small">{{ p.phone }}</td>
+            <td class="small">{{ p.experience or '—' }}</td>
+            <td>
+              <a href="{{ url_for('approve_provider', provider_id=p.provider_id, status=1) }}"
+                 class="btn btn-xs btn-success me-1">✓ Approve</a>
+              <a href="{{ url_for('approve_provider', provider_id=p.provider_id, status=2) }}"
+                 class="btn btn-xs btn-danger">✗ Reject</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    <!-- Recent Bookings -->
+    <h5 class="fw-700 mb-3">📋 Recent Bookings</h5>
+    <div class="table-responsive">
+      <table class="table qs-table">
+        <thead>
+          <tr><th>#</th><th>User</th><th>Provider</th><th>Service</th><th>Date</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for b in recent_bookings %}
+          <tr>
+            <td class="text-muted small">{{ b.booking_id }}</td>
+            <td>{{ b.user_name }}</td>
+            <td>{{ b.provider_name }}</td>
+            <td>{{ b.service_category }}</td>
+            <td class="small">{{ b.date }}</td>
+            <td><span class="status-badge status-{{ b.status.lower() }}">{{ b.status }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

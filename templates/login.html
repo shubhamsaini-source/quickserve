@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Login – QuickServe{% endblock %}
+{% block content %}
+<section class="auth-section py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+        <div class="auth-card">
+          <div class="auth-card-header text-center">
+            <div class="auth-logo">⚡</div>
+            <h3 class="fw-800 mt-2">Welcome Back</h3>
+            <p class="text-muted small">Login to your QuickServe account</p>
+          </div>
+          <div class="auth-card-body">
+            <form method="POST" action="{{ url_for('login') }}">
+              <div class="mb-3">
+                <label class="form-label fw-600">Login As</label>
+                <div class="role-selector">
+                  <input type="radio" name="role" id="r_user" value="user" checked class="d-none role-radio"/>
+                  <label for="r_user" class="role-btn"><i class="fas fa-user me-2"></i>User</label>
+                  <input type="radio" name="role" id="r_provider" value="provider" class="d-none role-radio"/>
+                  <label for="r_provider" class="role-btn"><i class="fas fa-hard-hat me-2"></i>Provider</label>
+                  <input type="radio" name="role" id="r_admin" value="admin" class="d-none role-radio"/>
+                  <label for="r_admin" class="role-btn"><i class="fas fa-shield-alt me-2"></i>Admin</label>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-600">Email</label>
+                <div class="input-icon-wrap">
+                  <i class="fas fa-envelope input-icon"></i>
+                  <input type="email" name="email" class="form-control ps-5" placeholder="your@email.com" required/>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label class="form-label fw-600">Password</label>
+                <div class="input-icon-wrap">
+                  <i class="fas fa-lock input-icon"></i>
+                  <input type="password" name="password" class="form-control ps-5" placeholder="••••••••" required/>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-qs-primary w-100 btn-lg fw-600">
+                <i class="fas fa-sign-in-alt me-2"></i>Login
+              </button>
+            </form>
+          </div>
+          <div class="auth-card-footer text-center">
+            <p class="text-muted small mb-1">Don't have an account?
+              <a href="{{ url_for('register') }}" class="link-accent">Register as User</a> or
+              <a href="{{ url_for('register_provider') }}" class="link-accent">Join as Provider</a>
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

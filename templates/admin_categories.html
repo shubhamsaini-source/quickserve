@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Categories – Admin{% endblock %}
+{% block content %}
+<section class="py-4">
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-800 mb-0">🗂️ Service Categories</h2>
+        <p class="text-muted small mb-0">Manage service categories</p>
+      </div>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary btn-sm">← Back</a>
+    </div>
+
+    <!-- Add Category Form -->
+    <div class="auth-card mb-4" style="max-width:500px;">
+      <div class="auth-card-header"><h6 class="fw-700 mb-0">➕ Add New Category</h6></div>
+      <div class="auth-card-body">
+        <form method="POST" class="row g-2">
+          <div class="col-12">
+            <input type="text" name="name" class="form-control" placeholder="Category Name" required/>
+          </div>
+          <div class="col-6">
+            <input type="text" name="icon" class="form-control" placeholder="Emoji icon e.g. ⚡"/>
+          </div>
+          <div class="col-6">
+            <input type="text" name="description" class="form-control" placeholder="Short description"/>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-qs-primary w-100">Add Category</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Category List -->
+    <div class="table-responsive">
+      <table class="table qs-table">
+        <thead>
+          <tr><th>#</th><th>Icon</th><th>Name</th><th>Description</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          {% for c in categories %}
+          <tr>
+            <td class="text-muted small">{{ c.category_id }}</td>
+            <td class="fs-4">{{ c.icon }}</td>
+            <td><strong>{{ c.name }}</strong></td>
+            <td class="text-muted small">{{ c.description or '—' }}</td>
+            <td>
+              <a href="{{ url_for('delete_category', cat_id=c.category_id) }}"
+                 class="btn btn-xs btn-danger"
+                 onclick="return confirm('Delete this category?')">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

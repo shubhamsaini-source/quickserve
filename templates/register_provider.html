@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Register as Provider – QuickServe{% endblock %}
+{% block content %}
+<section class="auth-section py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-7">
+        <div class="auth-card">
+          <div class="auth-card-header text-center">
+            <div class="auth-logo">🔧</div>
+            <h3 class="fw-800 mt-2">Join as Service Provider</h3>
+            <p class="text-muted small">Register your services — pending admin approval</p>
+          </div>
+          <div class="auth-card-body">
+            <form method="POST" action="{{ url_for('register_provider') }}">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-600">Full Name</label>
+                  <div class="input-icon-wrap">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" name="name" class="form-control ps-5" placeholder="Ramesh Kumar" required/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-600">Phone Number</label>
+                  <div class="input-icon-wrap">
+                    <i class="fas fa-phone input-icon"></i>
+                    <input type="text" name="phone" class="form-control ps-5" placeholder="9876543210"/>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-600">Email Address</label>
+                  <div class="input-icon-wrap">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" name="email" class="form-control ps-5" required/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-600">Password</label>
+                  <div class="input-icon-wrap">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" name="password" class="form-control ps-5" required/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-600">Service Category</label>
+                  <select name="category_id" class="form-select" required>
+                    <option value="">-- Select --</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.category_id }}">{{ cat.icon }} {{ cat.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-600">Years of Experience</label>
+                  <div class="input-icon-wrap">
+                    <i class="fas fa-star input-icon"></i>
+                    <input type="text" name="experience" class="form-control ps-5" placeholder="e.g. 5 years"/>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-600">City / Area</label>
+                  <div class="input-icon-wrap">
+                    <i class="fas fa-map-marker-alt input-icon"></i>
+                    <input type="text" name="address" class="form-control ps-5" placeholder="Delhi"/>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-600">Short Description</label>
+                  <textarea name="description" class="form-control" rows="3"
+                    placeholder="Describe your skills and what services you offer..."></textarea>
+                </div>
+                <div class="col-12 mt-2">
+                  <button type="submit" class="btn btn-qs-primary w-100 btn-lg fw-600">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Registration
+                  </button>
+                  <p class="text-muted small text-center mt-2">
+                    <i class="fas fa-info-circle me-1"></i>Your account will be active after admin approval.
+                  </p>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="auth-card-footer text-center">
+            <p class="text-muted small">Already registered? <a href="{{ url_for('login') }}" class="link-accent">Login here</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
