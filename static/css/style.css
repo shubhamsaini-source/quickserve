@@ -779,17 +779,22 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Plus Jakarta Sans', sans-serif; }
 .qs-footer {
   background: var(--qs-secondary);
   padding: 40px 0 20px;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.95);
 }
+.qs-footer p { color: rgba(255,255,255,0.85) !important; }
+.qs-footer h5, .qs-footer h6 { color: #ffffff !important; }
+.qs-footer .text-muted { color: rgba(255,255,255,0.80) !important; }
+.qs-footer .small { color: rgba(255,255,255,0.80) !important; }
+.qs-footer .ls-wide { color: #ffffff !important; letter-spacing: 0.08em; }
 .footer-link {
   display: block;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.85);
   text-decoration: none;
   font-size: 0.88rem;
   padding: 3px 0;
-  transition: color 0.2s;
+  transition: color 0.18s ease !important;
 }
-.footer-link:hover { color: var(--qs-primary); }
+.footer-link:hover { color: var(--qs-primary) !important; }
 
 /* ============================================================
    ALERTS
