@@ -621,7 +621,9 @@ def services():
                            categories=categories,
                            selected=category_filter,
                            user_city=user_city,
-                           detected_city=user_city)
+                           detected_city=user_city,
+                           user_lat=user_lat,
+                           user_lon=user_lon)
 
 @app.route("/provider/<int:provider_id>")
 def provider_detail(provider_id):

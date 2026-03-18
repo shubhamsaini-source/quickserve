@@ -1,5 +1,104 @@
 {% extends "base.html" %}
 {% block title %}Services – QuickServe{% endblock %}
+
+{% block scripts %}
+<!-- Leaflet CSS & JS — Free OpenStreetMap -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+<script>
+// Provider data from backend
+var providers = [
+  {% for dist, p in nearby_providers %}
+  {
+    name: "{{ p.name }}",
+    category: "{{ p.cat_name }}",
+    address: "{{ p.address }}",
+    lat: {{ p.lat }},
+    lon: {{ p.lon }},
+    dist: {{ dist }},
+    id: {{ p.provider_id }},
+    nearby: true,
+    rating: {{ "%.1f"|format(p.avg_rating) }}
+  },
+  {% endfor %}
+  {% for dist, p in other_providers %}
+  {
+    name: "{{ p.name }}",
+    category: "{{ p.cat_name }}",
+    address: "{{ p.address }}",
+    lat: {{ p.lat }},
+    lon: {{ p.lon }},
+    dist: {{ dist }},
+    id: {{ p.provider_id }},
+    nearby: false,
+    rating: {{ "%.1f"|format(p.avg_rating) }}
+  },
+  {% endfor %}
+];
+
+var userLat = {{ user_lat if user_lat else 28.6315 }};
+var userLon = {{ user_lon if user_lon else 77.2167 }};
+
+// Init map
+var map = L.map("map").setView([userLat, userLon], 12);
+
+// OpenStreetMap tiles — completely free
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: "© OpenStreetMap contributors",
+  maxZoom: 18
+}).addTo(map);
+
+// User location marker
+var userIcon = L.divIcon({
+  className: "",
+  html: '<div style="background:#3B82F6;width:18px;height:18px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 10px rgba(59,130,246,0.8);"></div>',
+  iconSize: [18, 18],
+  iconAnchor: [9, 9]
+});
+L.marker([userLat, userLon], {icon: userIcon})
+  .addTo(map)
+  .bindPopup("<strong>📍 Your Location</strong><br>{{ user_city or 'Delhi' }}")
+  .openPopup();
+
+// 10km radius circle
+L.circle([userLat, userLon], {
+  radius: 10000,
+  color: "#10B981",
+  fillColor: "#10B981",
+  fillOpacity: 0.06,
+  weight: 2,
+  dashArray: "6,6"
+}).addTo(map);
+
+// Provider markers
+providers.forEach(function(p) {
+  var color = p.nearby ? "#FF6B2C" : "#94A3B8";
+  var icon = L.divIcon({
+    className: "",
+    html: '<div style="background:' + color + ';width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 8px rgba(0,0,0,0.3);"></div>',
+    iconSize: [14, 14],
+    iconAnchor: [7, 7]
+  });
+
+  var badge = p.nearby
+    ? '<span style="background:#10B981;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;">📍 ' + p.dist + ' km</span>'
+    : '<span style="background:#94A3B8;color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;">🚗 ' + p.dist + ' km</span>';
+
+  L.marker([p.lat, p.lon], {icon: icon})
+    .addTo(map)
+    .bindPopup(
+      '<div style="min-width:160px;">' +
+      '<strong style="font-size:13px;">' + p.name + '</strong><br>' +
+      '<span style="color:#FF6B2C;font-size:12px;">' + p.category + '</span><br>' +
+      '<span style="font-size:11px;color:#666;">📍 ' + p.address + '</span><br>' +
+      '<span style="font-size:11px;">⭐ ' + p.rating + '</span>  ' + badge + '<br><br>' +
+      '<a href="/book/' + p.id + '" style="background:#FF6B2C;color:#fff;padding:4px 12px;border-radius:6px;text-decoration:none;font-size:12px;">Book Now →</a>' +
+      '</div>'
+    );
+});
+</script>
+{% endblock %}
 {% block content %}
 <section class="py-4">
   <div class="container">
@@ -12,6 +111,18 @@
           Browse and book trusted professionals near you
         {% endif %}
       </p>
+    </div>
+
+    <!-- LIVE MAP -->
+    <div class="map-container mb-4">
+      <div class="map-header">
+        <span class="fw-600">🗺️ Live Provider Map</span>
+        {% if user_city %}
+        <span class="badge bg-success ms-2" style="font-size:0.8rem;">📍 {{ user_city }}</span>
+        {% endif %}
+        <span class="text-muted small ms-2">— Green circle = 10km radius</span>
+      </div>
+      <div id="map" style="height:380px;border-radius:0 0 12px 12px;"></div>
     </div>
 
     <!-- Category Filter -->
