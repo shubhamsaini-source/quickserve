@@ -597,9 +597,19 @@ def services():
     if not login_required("user"): return redirect(url_for("login"))
     conn = get_db()
     category_filter = request.args.get("category", "")
-    # Get user coordinates via IP
-    user_lat, user_lon, user_city = get_user_coords()
-    session["detected_city"] = user_city
+    # Check if real GPS coords passed from browser
+    gps_lat = request.args.get("lat")
+    gps_lon = request.args.get("lon")
+
+    if gps_lat and gps_lon:
+        # Real GPS from browser
+        user_lat  = float(gps_lat)
+        user_lon  = float(gps_lon)
+        user_city = session.get("detected_city", "Your Location")
+    else:
+        # Fallback to IP detection
+        user_lat, user_lon, user_city = get_user_coords()
+        session["detected_city"] = user_city
 
     q = "SELECT sp.*, c.name as cat_name, COALESCE(AVG(r.stars),0) as avg_rating, COUNT(r.rating_id) as review_count, COALESCE(sp.latitude,28.6139) as lat, COALESCE(sp.longitude,77.2090) as lon FROM service_providers sp JOIN categories c ON sp.category_id=c.category_id LEFT JOIN ratings r ON sp.provider_id=r.provider_id WHERE sp.is_approved=1"
     all_p = conn.execute(q + " AND c.name=? GROUP BY sp.provider_id", (category_filter,)).fetchall() if category_filter else conn.execute(q + " GROUP BY sp.provider_id").fetchall()

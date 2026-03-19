@@ -1232,3 +1232,20 @@ input[maxlength="6"] {
   display: flex;
   align-items: center;
 }
+
+/* ── GPS Prompt Bars ── */
+.gps-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  animation: fadeInDown 0.4s ease both;
+}
+.gps-blue   { background: rgba(59,130,246,0.12);  color: #2563EB; border: 1px solid rgba(59,130,246,0.3); }
+.gps-green  { background: rgba(16,185,129,0.12);  color: #059669; border: 1px solid rgba(16,185,129,0.3); }
+.gps-orange { background: rgba(245,158,11,0.12);  color: #D97706; border: 1px solid rgba(245,158,11,0.3); }
+.gps-bar-hint { color: #64748B; font-weight: 400; font-size: 0.82rem; }
